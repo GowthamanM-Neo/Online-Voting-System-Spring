@@ -5,9 +5,12 @@ import javax.persistence.Id;
 
 @Entity
 public class UserDao {
+	
 	@Id
 	private String email;
 	private String password;
+	private String roles;
+	private boolean active;
 	private String name;
 	private String phone;
 	private String department;
@@ -47,5 +50,17 @@ public class UserDao {
 	}
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	public String getRoles() {
+		return roles;
+	}
+	public void setRoles(String roles) {
+		this.roles = roles;
+	}
+	public boolean isActive() {
+		return active;
+	}
+	public void setActive(boolean active) {
+		this.active = active;
 	}
 }

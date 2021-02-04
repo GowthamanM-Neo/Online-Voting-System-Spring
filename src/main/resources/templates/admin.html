@@ -4,8 +4,8 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-
-<link th:href="@{/styles/css/index.css}" rel="stylesheet" /></head>
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link th:href="@{/styles/css/admin.css}" rel="stylesheet" /></head>
 <body>
 
 <nav class="navbar navbar-expand-lg navbar-light bg-dark">
@@ -19,16 +19,16 @@
         <a class="nav-link" href="/" id="brandName">Users <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/add" id="brandName">Add Category</a>
+        <a class="nav-link" href="/admin/addcategory" id="brandName">Add Category</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#" id="brandName">Add poll</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link disabled" id="brandName" href="#">Disabled</a>
+        <a class="nav-link" href="/admin/addpoll" id="brandName">Add poll</a>
       </li>
     </ul>
   </div>
+  <span class="navbar-text" >
+      <a id="brandName" href="/logout"><i class="fa fa-power-off"></i> Logout</a>
+    </span>
 </nav>
 
 <div class="container">

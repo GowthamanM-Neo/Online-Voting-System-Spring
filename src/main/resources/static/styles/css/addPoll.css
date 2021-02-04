@@ -1,0 +1,26 @@
+@charset "ISO-8859-1";
+body{
+	overflow-x:hidden;
+}
+#brandName{
+	color:white;
+	text-transform:uppercase;
+	text-decoration:none;
+}
+#heading{
+	margin-top:30px;
+	font-weight:bold;
+	text-transform:uppercase;
+}
+.row{
+	margin-top:20px;
+	justify-content:center;
+}
+h5{
+	margin-top:40px;
+	color:green;
+	text-transfrom:uppercase;
+}
+#error{
+	color:red;
+}

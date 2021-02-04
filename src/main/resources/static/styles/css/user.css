@@ -1,0 +1,12 @@
+@charset "ISO-8859-1";
+#brandName{
+	color:white;
+	text-transform:uppercase;
+	text-decoration:none;
+}
+.jumbotron{
+	margin-top:15px;
+}
+.form-check{
+	margin-right:20px;
+}

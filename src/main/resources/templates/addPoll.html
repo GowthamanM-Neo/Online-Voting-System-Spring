@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Voting System</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+<link rel="stylesheet" th:href="@{/styles/css/addPoll.css}">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <a class="navbar-brand" href="#" id="brandName">Voting System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/" id="brandName">Users <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/addcategory" id="brandName">Add Category</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/admin/addpoll" id="brandName">Add poll</a>
+      </li>
+    </ul>
+  </div>
+  <span class="navbar-text" >
+      <a id="brandName" href="/logout"><i class="fa fa-power-off"></i> Logout</a>
+    </span>
+</nav>
+<div class="row">
+<div class="alert alert-danger alert-dismissible fade show col-md-4" th:style="@{'display:'+${errorDisplay}}" role="alert">
+ 	<h6 th:text="${errorMessage}"></h6>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+<div class="alert alert-success alert-dismissible fade show col-md-4" th:style="@{'display:'+${correctDisplay}}" role="alert">
+ 	<h6 th:text="${correctMessage}"></h6>
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+</div>
+
+<h1 class="text-center" id="heading">Poll Creation</h1>
+
+
+<form class="text-center" method="POST" th:action="@{addpoll}" modelAttribute="pollDetails">
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Name</label>
+    <input type="text" class="form-control col-sm-3" name="pollName" required>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Description</label>
+    <input type="text" class="form-control col-sm-3" name="description" required>
+  </div>
+  <div class="form-group row">
+      <label class="col-sm-2 col-form-label">Category</label>
+      <select class="form-control col-sm-3" name="category" required>
+        <th:block th:each="c : ${category}">
+        <option th:value="${c.categoryName}" th:text="${c.categoryName}"></option>    
+    	</th:block>
+      </select>
+    </div>
+  
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Choice 1</label>
+    <input type="text" class="form-control col-sm-3" name="choice1" required>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Choice 2</label>
+    <input type="text" class="form-control col-sm-3" name="choice2" required>
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Choice 3</label>
+    <input type="text" class="form-control col-sm-3" name="choice3">
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Choice 4</label>
+    <input type="text" class="form-control col-sm-3" name="choice4">
+  </div>
+  <div class="form-group row">
+    <label class="col-sm-2 col-form-label">Expiry Date</label>
+    <input type="date" class="form-control col-sm-3" name="expiryDate">
+  </div>
+  <button type="submit" class="btn btn-info	">Create Poll</button>
+</form>
+
+
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
+</body>
+</html>

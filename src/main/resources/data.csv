@@ -1,0 +1,4 @@
+email,password,roles,active,name,phone,department,salary
+nandhini@iamneo.ai,123,ROLE_USER,1,Nandhini,9087654321,Content,10000
+jeril@iamneo.ai,123,ROLE_USER,1,Jeril,9807654321,Dev,15000
+frank@iamneo.ai,123,ROLE_USER,1,Franklin,9807654311,Dev,15000

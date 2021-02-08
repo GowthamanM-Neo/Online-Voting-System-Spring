@@ -15,6 +15,7 @@ public class VoteDao {
 	private int choice2;
 	private int choice3;
 	private int choice4;
+	private String voterName;
 	public int getId() {
 		return id;
 	}
@@ -57,5 +58,4 @@ public class VoteDao {
 	public void setVoterName(String voterName) {
 		this.voterName = voterName;
 	}
-	private String voterName;
 }

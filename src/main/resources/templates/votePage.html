@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="https://www.thymeleaf.org" 
-  xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html>
 <head>
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
@@ -31,17 +30,28 @@
 
 	<div class="container">
 		<div class="container">
-			<th:block th:each="poll:${pollData}">
-				<div class="jumbotron">
-					<h1 class="display-4" th:text="${poll.pollName}"></h1>
-					<p class="lead" th:text="${poll.description}"></p>
-					<p th:text="@{'Category : '+${poll.category}}"></p>
-					<hr class="my-4">
-					<a th:href="'/user/'+${poll.pollName}" class="btn btn-info">Vote</a>
-				</div>
-			</th:block>
+		<div class="jumbotron">
+		<h1 th:text="${id}"></h1>
+		<hr class="my-4">
+					<form modelAttribute="voteresult" method="POST" th:action="'/user/'+${data.pollName}">
+
+					<div class="form-group row">
+						<label class="col-sm-3 col-form-label">Select an option to vote</label>
+						 <select
+							class="form-control col-sm-3" name="selectedValue">
+							<option th:value="1" th:text="${data.choice1}"></option>
+							<option th:value="2" th:text="${data.choice2}"></option>
+							<option th:value="3" th:text="${data.choice3}"></option>
+							<option th:value="4" th:text="${data.choice4}"></option>
+						</select>
+					</div>
+
+					<button type="submit" class="btn btn-info">Vote</button>
+					</form>
+		</div>
 		</div>
 	</div>
-	
+
+
 </body>
 </html>

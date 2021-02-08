@@ -1,10 +1,31 @@
 package com.example.demo.controller;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.batch.core.Job;
+import org.springframework.batch.core.JobExecution;
+import org.springframework.batch.core.JobParameter;
+import org.springframework.batch.core.JobParameters;
+import org.springframework.batch.core.JobParametersInvalidException;
+import org.springframework.batch.core.launch.JobLauncher;
+import org.springframework.batch.core.repository.JobExecutionAlreadyRunningException;
+import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
+import org.springframework.batch.core.repository.JobRestartException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -13,13 +34,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.dao.CategoryDao;
 import com.example.demo.dao.PollDao;
 import com.example.demo.dao.UserDao;
 import com.example.demo.dao.VoteDao;
 import com.example.demo.model.MyUserDetails;
+import com.example.demo.model.ResultModel;
 import com.example.demo.model.selectedValue;
 import com.example.demo.repo.*;
 
@@ -34,6 +59,14 @@ public class HomeController {
 	PollRepo iPollRepo;
 	@Autowired
 	VoteRepo iVoteRepo;
+	@Autowired
+    JobLauncher jobLauncher;
+    
+    @Autowired
+    Job job;
+    
+//    @Autowired
+//    FileUploadService fileuploadService;
 	
 	@GetMapping("/")
 	public String homePage() {
@@ -113,27 +146,124 @@ public class HomeController {
 		model.addAttribute("category", c);
 		return "addPoll";
 	}
+//	result page controller
+	@GetMapping("/admin/result")
+	public String showAdmin(Model model) {
+		int total = ((Collection<? extends GrantedAuthority>) iUserRepo.findAll()).size();
+		List<ResultModel> list = new LinkedList<ResultModel>();
+		if(total>0){
+			for(PollDao p:iPollRepo.findAll()) {
+				ResultModel r = new ResultModel();
+				int voted = ((Collection<? extends GrantedAuthority>) iVoteRepo.findAllByPollName(p.getPollName())).size();
+				float f=((float)voted/(float)total)*100;
+				r.setPollName(p.getPollName());
+				r.setPercentage((int)f);
+				list.add(r);
+			}
+		}
+		model.addAttribute("data", list);
+		return "result";
+	}
+	
+//	bulk adding users
+	@PostMapping("/admin/upload")
+	public String uploadFile(@RequestParam("file") MultipartFile file, RedirectAttributes attributes)
+			throws JobExecutionAlreadyRunningException, JobRestartException, JobInstanceAlreadyCompleteException,
+			JobParametersInvalidException {
+
+// check if file is empty
+		if (file.isEmpty()) {
+			attributes.addFlashAttribute("message", "Please select a file to upload.");
+			return "redirect:/";
+		}
+
+// normalize the file path
+		String fileName = org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
+
+//// save the file on the local file system
+//try {
+//Path path = Paths.get(UPLOAD_DIR + fileName);
+//Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+//} catch (IOException e) {
+//e.printStackTrace();
+//}
+
+		Map<String, JobParameter> maps = new HashMap<>();
+
+		maps.put("time", new JobParameter(System.currentTimeMillis()));
+		JobParameters parameters = new JobParameters(maps);
+		JobExecution jobExecution = jobLauncher.run(job, parameters);
+		System.out.println("Batch is running");
+		while ((jobExecution).isRunning()) {
+			System.out.println("...");
+		}
+
+		System.out.println("Job Execution Status " + jobExecution.getStatus());
+
+// return success response
+		attributes.addFlashAttribute("message", "You successfully uploaded " + fileName + '!');
+
+		return "redirect:/";
+	}
 	
 	
 //	user pages
 	@GetMapping("/user")
 	public String users(Model model) {
 		
-		Iterable<PollDao> p = iPollRepo.findAll();
-		model.addAttribute("pollData", p);
+		Iterable<VoteDao> v = iVoteRepo.findAllByVoterName(getLoggedUser());
+		Iterable<PollDao> temp = iPollRepo.findAll();
+		List<PollDao> a = new LinkedList<PollDao>();
+		for(PollDao x:temp) {
+			boolean flag = true;
+			for(VoteDao i:v) {
+				if(i.getPollName().toString().equals(x.getPollName())) {
+					flag=false;
+					break;
+				}
+			}
+			if(flag)
+				a.add(x);
+		}
+		model.addAttribute("pollData", a);
 		return "user";
+	}
+
+	@GetMapping("/user/{id}")
+	public String votePage(@PathVariable String id,Model model) {
+		model.addAttribute("id", id);
+		Optional<PollDao> p = iPollRepo.findById(id);
+		model.addAttribute("vote", new selectedValue());
+		model.addAttribute("data", p.get());
+		return "votePage";
+	}
+	@PostMapping("/user/{id}")
+	public String postVotePage(@ModelAttribute("voteresult") selectedValue v,@PathVariable String id) {
+		VoteDao vote = new VoteDao();
+		vote.setPollName(id);
+		vote.setVoterName(getLoggedUser());
+		switch(Integer.parseInt(v.getSelectedValue().toString())) {
+		case 1:
+			vote.setChoice1(1);
+			break;
+		case 2:
+			vote.setChoice2(1);
+			break;
+		case 3:
+			vote.setChoice3(1);
+			break;
+		default:
+			vote.setChoice4(1);
+			break;
+		}
+		iVoteRepo.save(vote);
+		System.out.println(id.toString());
+		System.out.println(v.getSelectedValue());
+		return "redirect:/user";
 	}
 	
-	@PostMapping("/user/{id}/{select}")
-	public String userPost(@PathVariable String id, Model model,@PathVariable String select) {
-		System.out.println(select);
-		VoteDao v = new VoteDao();
-		v.setPollName(id);
-		v.setVoterName(getLoggedUser());
-		Iterable<PollDao> p = iPollRepo.findAll();
-		model.addAttribute("pollData", p);
-		return "user";
-	}
+	
+	
 	//functions
 	public String getLoggedUser() {
 		MyUserDetails user = (MyUserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();

@@ -22,6 +22,7 @@ import org.springframework.batch.core.repository.JobExecutionAlreadyRunningExcep
 import org.springframework.batch.core.repository.JobInstanceAlreadyCompleteException;
 import org.springframework.batch.core.repository.JobRestartException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -50,6 +51,7 @@ import com.example.demo.dao.UserDao;
 import com.example.demo.dao.VoteDao;
 import com.example.demo.model.MyUserDetails;
 import com.example.demo.model.ResultModel;
+import com.example.demo.model.SaveUser;
 import com.example.demo.model.selectedValue;
 import com.example.demo.repo.*;
 
@@ -280,6 +282,44 @@ public class HomeController {
 		return "redirect:/user";
 	}
 	
+//	edit user information
+	@GetMapping("/user/edit")
+	public String editInfo(Model model) {
+		Optional<UserDao> u = iUserRepo.findById(getLoggedUser());
+		model.addAttribute("warning", "none");
+		model.addAttribute("success", "none");
+		model.addAttribute("user", u.get());
+		model.addAttribute("warningMessage", "");
+		return "edit";
+	}
+	
+	@PostMapping("/user/save/{id}")
+	public String saveInfo(@ModelAttribute("edit") SaveUser e,Model model,@PathVariable String id){
+		if(e.getPassword().equals(e.getConfirmpassword())) {
+			model.addAttribute("warning", "none");
+			model.addAttribute("success", "block");
+			Optional<UserDao> u = iUserRepo.findById(getLoggedUser());
+			model.addAttribute("user", u.get());
+			UserDao a = new UserDao();
+			a.setActive(true);
+			a.setDepartment(e.getDepartment());
+			a.setEmail(id);
+			a.setName(e.getName());
+			a.setPassword(e.getConfirmpassword());
+			a.setPhone(e.getPhone());
+			a.setSalary(e.getSalary());
+			a.setRoles("ROLE_USER");
+			iUserRepo.save(a);
+			return "edit";		
+		}else {
+			System.out.println(e);
+			model.addAttribute("success", "none");
+			model.addAttribute("warning", "block");
+			Optional<UserDao> u = iUserRepo.findById(getLoggedUser());
+			model.addAttribute("user", u.get());
+			return "edit";
+		}
+	}
 	
 	
 	//functions

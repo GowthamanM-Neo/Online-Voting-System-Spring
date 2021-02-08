@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Online Voting</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+<link rel="stylesheet" th:href="@{/styles/css/user.css}">
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+</head>
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-light bg-dark">
+  <a class="navbar-brand" href="#" id="brandName">Voting System</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNav">
+    <ul class="navbar-nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/" id="brandName">POLLS <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/user/edit" id="brandName">Edit profile</a>
+      </li>
+      </ul>
+  </div>
+    <span class="navbar-text" >
+      <a id="brandName" href="/logout"><i class="fa fa-power-off"></i> Logout</a>
+    </span>
+</nav>
+
+	<div class="container">
+	
+		<h1 class="heading text-center">Edit profile</h1>
+		<div class="row">
+			<div class="col-sm-6">
+				<div class="alert alert-danger alert-dismissible fade show"
+					role="alert" th:style="@{'display:'+${warning}}">
+					Password Does Not Match!
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="alert alert-success alert-dismissible fade show"
+					role="alert" th:style="@{'display:'+${success}}">
+					Profile Updated Successfully!
+					<button type="button" class="close" data-dismiss="alert"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+
+				<form model="edit" method="post" th:action="@{'/user/save/'+${user.email}}">
+					<div class="form-group">
+						<label for="exampleInputEmail1">Email address</label> <input
+							type="email" class="form-control" th:value="${user.email}"
+							aria-describedby="emailHelp" name="email" disabled>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Name</label> <input
+							type="text" class="form-control"
+							th:value="${user.name}" name="name">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Phone Number</label> <input
+							type="text" class="form-control"
+							th:value="${user.phone}" name="phone">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Department</label> <input
+							type="text" class="form-control"
+							th:value="${user.department}" name="department">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Salary</label> <input
+							type="text" class="form-control"
+							th:value="${user.salary}" name="salary">
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword1">Password</label> <input
+							type="password" class="form-control"
+							 name="password" required>
+					</div>
+					<div class="form-group">
+						<label for="exampleInputPassword2">Confirm Password</label> <input
+							type="password" class="form-control"
+							 name="confirmpassword" required>
+					</div>
+					<small style="margin-bottom:10px" class="form-text text-muted">If you need not to change password, enter your old password</small>
+					<button type="submit" class="btn btn-info">Save</button>
+				</form>
+			</div>
+		</div>
+	</div>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+</body>
+</html>

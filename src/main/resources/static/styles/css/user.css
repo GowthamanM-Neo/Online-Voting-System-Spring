@@ -10,3 +10,12 @@
 .form-check{
 	margin-right:20px;
 }
+.row{
+	justify-content:center;
+}
+.heading{
+	text-transform:uppercase;
+	font-weight:bold;
+	margin-top:20px;
+	margin-bottom:20px;
+}

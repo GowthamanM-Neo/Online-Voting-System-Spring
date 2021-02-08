@@ -6,6 +6,11 @@ import javax.persistence.Id;
 @Entity
 public class UserDao {
 	
+	@Override
+	public String toString() {
+		return "UserDao [email=" + email + ", password=" + password + ", roles=" + roles + ", active=" + active
+				+ ", name=" + name + ", phone=" + phone + ", department=" + department + ", salary=" + salary + "]";
+	}
 	@Id
 	private String email;
 	private String password;

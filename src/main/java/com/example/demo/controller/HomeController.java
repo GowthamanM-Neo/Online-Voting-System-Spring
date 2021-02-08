@@ -1,4 +1,9 @@
 package com.example.demo.controller;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -50,6 +55,8 @@ import com.example.demo.repo.*;
 
 @Controller
 public class HomeController {
+	
+	private final String UPLOAD_DIR =  System.getProperty("user.dir")  + "/src/main/resources/";
 	
 	@Autowired
 	UserRepo iUserRepo;
@@ -180,13 +187,13 @@ public class HomeController {
 // normalize the file path
 		String fileName = org.springframework.util.StringUtils.cleanPath(file.getOriginalFilename());
 
-//// save the file on the local file system
-//try {
-//Path path = Paths.get(UPLOAD_DIR + fileName);
-//Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-//} catch (IOException e) {
-//e.printStackTrace();
-//}
+// save the file on the local file system
+		try {
+		Path path = Paths.get(UPLOAD_DIR + fileName);
+		Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+		} catch (IOException e) {
+		e.printStackTrace();
+		}
 
 		Map<String, JobParameter> maps = new HashMap<>();
 
@@ -202,7 +209,18 @@ public class HomeController {
 
 // return success response
 		attributes.addFlashAttribute("message", "You successfully uploaded " + fileName + '!');
-
+		
+		try {
+            Path path = Paths.get(UPLOAD_DIR + fileName);
+            if(Files.deleteIfExists(path)) {
+            	System.out.println("Deletion of file after upload successful");
+            } else {
+            	System.out.println("Deletion of file after upload Failed");
+            };
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+		
 		return "redirect:/";
 	}
 	
